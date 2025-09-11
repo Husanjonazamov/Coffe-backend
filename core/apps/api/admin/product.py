@@ -8,5 +8,7 @@ from core.apps.api.models import ProductModel
 class ProductAdmin(ModelAdmin):
     list_display = (
         "id",
-        "__str__",
+        "title",
+        "price"
     )
+    autocomplete_fields = ["category"]

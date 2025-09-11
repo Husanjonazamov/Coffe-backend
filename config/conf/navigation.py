@@ -13,19 +13,32 @@ PAGES = [
         ],
     },
     {
-        "title": _("Auth"),
+        "title": _("Foydalanuvchilar bo'limi"),
         "separator": True,  # Top border
         "items": [
             {
-                "title": _("Users"),
+                "title": _("Foydalanuvchilar"),
                 "icon": "group",
-                "link": reverse_lazy("admin:http_user_changelist"),
+                "link": reverse_lazy("admin:accounts_user_changelist"),
+            },
+           
+        ],
+    },
+     {
+        "title": _("Mahsulotlar"),
+        "separator": True,  # Top border
+        "items": [
+            {
+                "title": _("Coffelar"),
+                "icon": "group",
+                "link": reverse_lazy("admin:api_productmodel_changelist"),
             },
             {
-                "title": _("Group"),
+                "title": _("Kategoryalar"),
                 "icon": "group",
-                "link": reverse_lazy("admin:auth_group_changelist"),
+                "link": reverse_lazy("admin:api_categorymodel_changelist"),
             },
+           
         ],
     },
 ]

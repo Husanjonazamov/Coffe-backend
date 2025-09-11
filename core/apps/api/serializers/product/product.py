@@ -1,14 +1,21 @@
 from rest_framework import serializers
 
 from core.apps.api.models import ProductModel
-
+from core.apps.api.serializers.category import BaseCategorySerializer
 
 class BaseProductSerializer(serializers.ModelSerializer):
+    category = BaseCategorySerializer(many=True)
+    
     class Meta:
         model = ProductModel
         fields = [
             "id",
-            "name",
+            "title",
+            "description",
+            "category",
+            "image",
+            "price"
+            
         ]
 
 
