@@ -51,13 +51,18 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
     def register(self, request):
         ser = self.get_serializer(data=request.data)
         ser.is_valid(raise_exception=True)
-        data = ser.data
-        phone = data.get("phone")
+        data = ser.validated_data
+        tg_id = data.get("tg_id")
+        
+        if get_user_model().objects.filter(tg_id=tg_id).exists():
+            return Response(
+            {"detail": "Bu tg_id bilan foydalanuvchi allaqachon mavjud."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
         # Create pending user
-        self.create_user(phone, data.get("first_name"), data.get("last_name"), data.get("password"))
-        self.send_confirmation(phone)  # Send confirmation code for sms eskiz.uz
+        self.create_user(tg_id, data.get("first_name"))
         return Response(
-            {"detail": _("Sms %(phone)s raqamiga yuborildi") % {"phone": phone}},
+            {"detail": "Foydalanuvchi yaratildi"},
             status=status.HTTP_202_ACCEPTED,
         )
 

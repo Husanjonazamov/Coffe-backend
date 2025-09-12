@@ -11,8 +11,7 @@ class CustomUserAdmin(admin.UserAdmin, ModelAdmin):
     form = UserChangeForm
     list_display = (
         "first_name",
-        "last_name",
-        "phone",
+        "tg_id",
         "role",
     )
     autocomplete_fields = ["groups", "user_permissions"]

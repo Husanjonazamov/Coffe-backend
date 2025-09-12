@@ -10,22 +10,22 @@ class LoginSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    phone = serializers.CharField(max_length=255)
+    tg_id = serializers.IntegerField()
 
     def validate_phone(self, value):
-        user = get_user_model().objects.filter(phone=value, validated_at__isnull=False)
+        user = get_user_model().objects.filter(tg_id=value, validated_at__isnull=False)
         if user.exists():
             raise exceptions.ValidationError(_("Phone number already registered."), code="unique")
         return value
 
     class Meta:
         model = get_user_model()
-        fields = ["first_name", "last_name", "phone", "password"]
+        fields = ["first_name", "tg_id"]
         extra_kwargs = {
             "first_name": {
                 "required": True,
             },
-            "last_name": {"required": True},
+            "tg_id": {"required": True},
         }
 
 
