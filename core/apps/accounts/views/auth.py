@@ -197,7 +197,9 @@ class MeView(BaseViewSetMixin, GenericViewSet, UserService):
             user = User.objects.get(tg_id=tg_id)
             return Response(self.get_serializer(user).data)
         except User.DoesNotExist:
-            return Response({"detail": _("Foydalanuvchi topilmadi")}, status=404)
+            return Response({
+                "status": False,
+                "detail": _("Foydalanuvchi topilmadi")}, status=404)
 
 
 @extend_schema(tags=["change-password"], description="Parolni o'zgartirish uchun")

@@ -23,4 +23,4 @@ class User(auth_models.AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.phone
+        return self.first_name
