@@ -17,12 +17,13 @@ class UserService(sms.SmsService):
             "access": str(refresh.access_token),
         }
 
-    def create_user(self, tg_id, first_name):
+    def create_user(self, tg_id, first_name, lang):
         get_user_model().objects.update_or_create(
             tg_id=tg_id,
             defaults={
                 "tg_id": tg_id,
                 "first_name": first_name,
+                "lang": lang
             },
         )
 

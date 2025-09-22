@@ -60,7 +60,7 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
             status=status.HTTP_400_BAD_REQUEST,
         )
         # Create pending user
-        self.create_user(tg_id, data.get("first_name"))
+        self.create_user(tg_id, data.get("first_name"), data.get("lang"))
         return Response(
             {"detail": "Foydalanuvchi yaratildi"},
             status=status.HTTP_202_ACCEPTED,
@@ -164,7 +164,7 @@ class ResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
 
 @extend_schema(tags=["me"])
 class MeView(BaseViewSetMixin, GenericViewSet, UserService):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_serializer_class(self):
         match self.action:
@@ -172,8 +172,12 @@ class MeView(BaseViewSetMixin, GenericViewSet, UserService):
                 return UserSerializer
             case "user_update":
                 return UserUpdateSerializer
+            case "me_by_tg":
+                return UserSerializer
             case _:
                 return None
+            
+            
 
     @action(methods=["GET", "OPTIONS"], detail=False, url_path="me")
     def me(self, request):
@@ -185,6 +189,15 @@ class MeView(BaseViewSetMixin, GenericViewSet, UserService):
         ser.is_valid(raise_exception=True)
         ser.save()
         return Response({"detail": _("Malumotlar yangilandi")})
+    
+    @action(methods=["GET"], detail=False, url_path=r"me/(?P<tg_id>\d+)")
+    def me_by_tg(self, request, tg_id=None):
+        from core.apps.accounts.models.user import User
+        try:
+            user = User.objects.get(tg_id=tg_id)
+            return Response(self.get_serializer(user).data)
+        except User.DoesNotExist:
+            return Response({"detail": _("Foydalanuvchi topilmadi")}, status=404)
 
 
 @extend_schema(tags=["change-password"], description="Parolni o'zgartirish uchun")
