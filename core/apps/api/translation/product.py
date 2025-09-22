@@ -5,4 +5,7 @@ from core.apps.api.models import ProductModel
 
 @register(ProductModel)
 class ProductTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "title",
+        "description"
+    ]

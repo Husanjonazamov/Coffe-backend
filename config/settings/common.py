@@ -36,7 +36,7 @@ PASSWORD_HASHERS = [
 ]
 
 INSTALLED_APPS = [
-    
+    "modeltranslation",
     "unfold",
     "unfold.contrib.filters",
     "unfold.contrib.forms",
