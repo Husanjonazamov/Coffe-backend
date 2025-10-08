@@ -29,6 +29,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..serializers import ChangePasswordSerializer
 
 from .. import models
+from django.shortcuts import get_object_or_404
 
 
 @extend_schema(tags=["register"])
@@ -185,10 +186,17 @@ class MeView(BaseViewSetMixin, GenericViewSet, UserService):
 
     @action(methods=["PATCH", "PUT"], detail=False, url_path="user-update")
     def user_update(self, request):
-        ser = self.get_serializer(instance=request.user, data=request.data, partial=True)
+        tg_id = request.data.get("tg_id")
+        from core.apps.accounts.models.user import User
+        if not tg_id:
+            return Response({"detail": _("tg_id kerak!")}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(User, tg_id=tg_id)
+
+        ser = self.get_serializer(instance=user, data=request.data, partial=True)
         ser.is_valid(raise_exception=True)
         ser.save()
-        return Response({"detail": _("Malumotlar yangilandi")})
+        return Response({"detail": _("Ma'lumotlar yangilandi")}, status=status.HTTP_200_OK)
     
     @action(methods=["GET"], detail=False, url_path=r"me/(?P<tg_id>\d+)")
     def me_by_tg(self, request, tg_id=None):
@@ -200,7 +208,9 @@ class MeView(BaseViewSetMixin, GenericViewSet, UserService):
             return Response({
                 "status": False,
                 "detail": _("Foydalanuvchi topilmadi")}, status=404)
-
+            
+            
+            
 
 @extend_schema(tags=["change-password"], description="Parolni o'zgartirish uchun")
 class ChangePasswordView(BaseViewSetMixin, GenericViewSet):
